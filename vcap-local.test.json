@@ -1,0 +1,25 @@
+{
+  "cloudantNoSQLDB": [
+    {
+      "credentials": {
+        "username": "d611d71b-8400-4026-88b5-a40db16e9f3f-bluemix",
+        "password": "da3553bea9bf358a22f780b3bb7407d8e622f94f1e15824e176327cfdaeb6b82",
+        "host": "d611d71b-8400-4026-88b5-a40db16e9f3f-bluemix.cloudant.com",
+        "port": 443,
+        "url": "https://d611d71b-8400-4026-88b5-a40db16e9f3f-bluemix:da3553bea9bf358a22f780b3bb7407d8e622f94f1e15824e176327cfdaeb6b82@d611d71b-8400-4026-88b5-a40db16e9f3f-bluemix.cloudant.com"
+      },
+      "syslog_drain_url": null,
+      "volume_mounts": [],
+      "label": "cloudantNoSQLDB",
+      "provider": null,
+      "plan": "Lite",
+      "name": "TheGym-cloudantNoSQLDB",
+      "tags": [
+        "data_management",
+        "ibm_created",
+        "lite",
+        "ibm_dedicated_public"
+      ]
+    }
+  ]
+}
