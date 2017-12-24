@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>The Gym</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
   </head>
   <body>
 
@@ -23,15 +23,20 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12 text-center" >
-          <form action="chest.html">
+
+            <h3>Choose an option</h3>
+
+        </div>
+        <div class="col-md-12 text-center" >
+          <form action="categories.html">
             <button type="submit" class="btn-primary menuButton ">Enter data</button>
           </form>
         </div>
       </div>
       <div class="row mt-10">
         <div class="col-sm-12 text-center">
-          <form action="#">
-            <button type="submit" class="btn-primary menuButton">View stats</button>
+          <form action="Overview.html">
+            <button type="submit" class="btn-primary menuButton">View statistics</button>
           </form>
         </div>
       </div>
@@ -39,32 +44,10 @@
     <footer class="footer">
       <p class="text-muted text-center mt-5">By M. Mylle</p>
     </footer>
-
-
-    <!--
-
-
-
-    <div class="container">
-  <div class="row">
-    <div class="col bg-info text-white pb-2">
-      <h1>The Gym App</h1>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      1 of 3
-    </div>
-    <div class="col">
-      1 of 3
-    </div>
-    <div class="col">
-      1 of 3
-    </div>
-  </div>
-</div>-->
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
+  <script src="../assets/js/statistics.js"></script>
 </body>
 </html>

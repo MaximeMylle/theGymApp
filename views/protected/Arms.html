@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>The Gym</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
   </head>
   <body>
 
@@ -23,81 +23,61 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12 text-center" >
-          <h2>Chest</h2>
+          <h2>Arms</h2>
         </div>
       </div>
+      <form action="/postdata" method="post">
+        <input name="category" value="arms" class="hide">
       <div class="row mt-10">
         <div class="col-sm-12 text-center form-group">
           <label for="sel1">Select exercise</label>
-     <select class="form-control" id="sel1">
-       <option>Barbell incline</option>
-       <option>Barbell decline</option>
-       <option>Barbell straight</option>
-       <option>dumbbells incline</option>
-       <option>dumbbells decline</option>
-       <option>dumbbells straight</option>
+     <select class="form-control" id="sel1" name="exercise">
+       <option>Bicep Barbell Curl</option>
+       <option>Bicep Dumbell Curl</option>
+       <option>Tricep Pushdown</option>
+       <option>Dip Machine</option>
      </select>
         </div>
       </div>
       <div class="row mt-10">
         <div class="col-sm-12 text-center">
-          <form action="#">
             <label for="set1" class="">Set 1</label>
-            <input type="number" class="form-control" name="set1" value="15">
-          </form>
+            <input type="number" class="form-control" name="set1" value="0">
         </div>
       </div>
       <div class="row mt-10">
         <div class="col-sm-12 text-center">
-          <form action="#">
             <label for="set2" class="">Set 2</label>
-            <input type="number" class="form-control" name="set2" value="15">
-          </form>
+            <input type="number" class="form-control" name="set2" value="0">
+
         </div>
       </div>
       <div class="row mt-10">
         <div class="col-sm-12 text-center">
-          <form action="#">
             <label for="set3" class="">Set 3</label>
-            <input type="number" class="form-control" name="set3" value="15">
-          </form>
+            <input type="number" class="form-control" name="set3" value="0">
         </div>
       </div>
       <div class="row mt-10">
         <div class="col-sm-12 text-center">
-          <form action="chest.html">
-            <button type="submit" class="btn-primary menuButton ">Confirm</button>
+            <button type="submit" class="btn-primary menuButton">Confirm</button>
+        </div>
+      </div>
+      </form>
+      <br><br>
+      <div class="row mt-10">
+        <div class="col-sm-12 text-center">
+          <form action="categories.html">
+            <button type="" class="btn-primary menuButton">Go Back</button>
           </form>
         </div>
       </div>
     </div>
+
     <footer class="footer">
       <p class="text-muted text-center mt-5">By M. Mylle</p>
     </footer>
-
-
-    <!--
-
-
-
-    <div class="container">
-  <div class="row">
-    <div class="col bg-info text-white pb-2">
-      <h1>The Gym App</h1>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      1 of 3
-    </div>
-    <div class="col">
-      1 of 3
-    </div>
-    <div class="col">
-      1 of 3
-    </div>
-  </div>
-</div>-->
+</div>
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
