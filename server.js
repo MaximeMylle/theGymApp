@@ -1,116 +1,246 @@
 var express = require("express");
+var session = require('express-session');
+
+
+//HOWTO USERNAME
+// req.session.views = 1 etcetc
 var app = express();
 var cfenv = require("cfenv");
 var bodyParser = require('body-parser');
-
+var async = require('async');
+var bcrypt = require('bcryptjs');
+var session = require('express-session');
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 
 // parse application/json
 app.use(bodyParser.json());
-
-var mydb;
-
-
-
-
-
-
-/* Endpoint to greet and add a new visitor to database.
-* Send a POST request to localhost:3000/api/visitors with body
-* {
-* 	"name": "Bob"
-* }
-*/
-app.post("/api/visitors", function (request, response) {
-  var userName = request.body.name;
-  if(!mydb) {
-    console.log("No database.");
-    response.send("Hello " + userName + "!");
-    return;
-  }
-  // insert the username as a document
-  mydb.insert({ "name" : userName }, function(err, body, header) {
-    if (err) {
-      return console.log('[mydb.insert] ', err.message);
-    }
-    response.send("Hello " + userName + "! I added you to the database.");
-  });
-});
-
-/**
- * Endpoint to get a JSON array of all the visitors in the database
- * REST API example:
- * <code>
- * GET http://localhost:3000/api/visitors
- * </code>
- *
- * Response:
- * [ "Bob", "Jane" ]
- * @return An array of all the visitor names
- */
-app.get("/api/visitors", function (request, response) {
-  var names = [];
-  if(!mydb) {
-    response.json(names);
-    return;
-  }
-
-  mydb.list({ include_docs: true }, function(err, body) {
-    if (!err) {
-      body.rows.forEach(function(row) {
-        if(row.doc.name)
-          names.push(row.doc.name);
-      });
-      response.json(names);
-    }
-  });
-});
+app.use(session({
+  secret: "123123123",
+  resave: false,
+  saveUninitialized: true
+}));
 
 
-// load local VCAP configuration  and service credentials
 var vcapLocal;
 try {
   vcapLocal = require('./vcap-local.json');
-  console.log("Loaded local VCAP", vcapLocal);
-} catch (e) { }
+  console.log("Loaded local VCAP");
+} catch (e) {}
 
-const appEnvOpts = vcapLocal ? { vcap: vcapLocal} : {}
+var Cloudant = require('cloudant');
+var me = vcapLocal.cloudantNoSQLDB[0].credentials.username; // Set this to your own account
+var password = vcapLocal.cloudantNoSQLDB[0].credentials.password;
+// Initialize the library with my account.
+var cloudant = Cloudant({
+  account: me,
+  password: password
+});
+var db = null;
+var doc = null;
+var dbname = "";
 
-const appEnv = cfenv.getAppEnv(appEnvOpts);
+// cloudant.db.list(function(err, allDbs) {
+//   console.log('All my databases: %s', allDbs.join(', '))
+// });
 
-if (appEnv.services['cloudantNoSQLDB'] || appEnv.getService(/cloudant/)) {
-  // Load the Cloudant library.
-  var Cloudant = require('cloudant');
-
-  // Initialize database with credentials
-  if (appEnv.services['cloudantNoSQLDB']) {
-     // CF service named 'cloudantNoSQLDB'
-     var cloudant = Cloudant(appEnv.services['cloudantNoSQLDB'][0].credentials);
-  } else {
-     // user-provided service with 'cloudant' in its name
-     var cloudant = Cloudant(appEnv.getService(/cloudant/).credentials);
-  }
-
-  //database name
-  var dbName = 'mydb';
-
-  // Create a new "mydb" database.
-  cloudant.db.create(dbName, function(err, data) {
-    if(!err) //err if database doesn't already exists
-      console.log("Created database: " + dbName);
+var createDatabase = function( /*callback*/ ) {
+  console.log("Creating database '" + dbname + "'");
+  cloudant.db.create(dbname, function(err, data) {
+    console.log('Error:', err);
+    console.log('Data:', data);
+    db = cloudant.db.use(dbname);
+    //callback(err, data);
   });
+};
 
-  // Specify the database we are going to use (mydb)...
-  mydb = cloudant.db.use(dbName);
+var createDocument = function( /*callback*/ ) {
+  console.log("Creating document 'mydoc'");
+  // we are specifying the id of the document so we can update and delete it later
+  db.insert({
+    a: 2,
+    b: 'two'
+  }, function(err, data) {
+    console.log('Error:', err);
+    console.log('Data:', data);
+    //callback(err, data);
+  });
+};
+
+//db = cloudant.db.use("chest");
+
+var readDocument = function( /*callback*/ ) {
+  console.log("Reading document 'mydoc'");
+  db.get('', function(err, data) {
+    console.log('Error:', err);
+    console.log('Data:', data);
+    // keep a copy of the doc so we know its revision token
+    doc = data;
+    //callback(err, data);
+  });
+};
+
+//readDocument();
+
+var readAllTest = function() {
+  db.list({
+    include_docs: true
+  }, function(err, data) {
+    //console.log(err, data);
+    var datarows = data.rows;
+    //console.log("datarows:\n");
+    datarows.forEach((row) => {
+      //console.log("a: " + row.doc.a);
+    });
+    //console.log(datarows);
+  });
 }
 
-//serve static file (index.html, images, css)
+app.post("/login", function(request, response) {
+  var username = request.body.username;
+  console.log("USERNAME POSTED: " + username);
+  var password = request.body.password;
+  console.log("PASSWORD POSTED: " + password);
+  db = cloudant.db.use("login");
+  //make key = username
+  db.get(username, function(err, data) {
+    console.log('Error:', err);
+    if (err) {
+      response.redirect("back");
+    } else {
+      console.log('Data:', data);
+      // keep a copy of the doc so we know its revision token
+      doc = data;
+      hash = data.password
+
+      bcrypt.compare(password, hash, function(err, res) {
+        if (res) {
+          request.session.username = username;
+          response.redirect("/protected/home.html");
+        } else {
+          response.redirect("unsuccesfull.html");
+        }
+      });
+    }
+  });
+});
+
+app.post("/register", function(request, response) {
+  var username = request.body.username;
+  var password = request.body.password;
+  db = cloudant.db.use("login");
+
+  var salt = bcrypt.genSaltSync(10);
+  var hash = bcrypt.hashSync(password, salt);
+
+  db.insert({
+    _id: username,
+    username: username,
+    password: hash
+  }, function(err, data) {
+    console.log('Error:', err);
+    console.log('Data:', data);
+  });
+
+  var dbname = username + "_data";
+
+  cloudant.db.create(dbname, function(err, data) {
+    console.log('Error:', err);
+    console.log('Data:', data);
+  });
+  response.redirect("login.html");
+
+});
+
+
+app.post("/postdata", function(request, response) {
+  var username = request.session.username;
+  var exercise = request.body.exercise;
+  var category = request.body.category;
+  var set1 = request.body.set1;
+  var set2 = request.body.set2;
+  var set3 = request.body.set3;
+
+
+  var date = new Date();
+  var day = date.getDate();
+  var month = date.getMonth();
+  var year = date.getYear();
+  //console.log("test post");
+  console.log("postdata: " + exercise + " " + category + " " + set1 + " " + set2 + " " + set3);
+
+  var dbname = username + "_data";
+  db = cloudant.db.use(dbname);
+  db.insert({
+    category:category,
+    exercise:exercise,
+    set1:set1,
+    set2:set2,
+    set3:set3,
+    day:day,
+    month:month,
+    year:year
+  }, function(err, data) {
+    console.log('Error:', err);
+    console.log('Data:', data);
+    //callback(err, data);
+  });
+
+  console.log("\n\ntime: " +day+"/"+month+"/"+year );
+
+
+  response.redirect("back");
+});
+
+
+
+app.get("/api/getdata", function(request, response) {
+    if(request.session.username){
+    var username = request.session.username;
+    console.log("\nusername: "+username+"\n");
+    var dbname = username+"_data";
+    db = cloudant.db.use(dbname);
+    db.list({
+      include_docs: true
+    }, function(err, data) {
+      console.log(err, data);
+      response.setHeader('Content-Type', 'application/json');
+      response.send(JSON.stringify(data));
+    });
+  }
+  else{
+    response.redirect("/login.html");
+  }
+
+
+
+
+
+});
+
+app.get('/protected/*', function(request, response, next) {
+  if (!request.session.username) {
+    response.redirect('/login.html');
+  } else {
+    next();
+  }
+});
+
+
+app.get('/', function(request, response) {
+  if (request.session.username) {
+    response.redirect('/protected/home.html');
+  } else {
+    response.redirect('/login.html');
+  }
+});
+
+
 app.use(express.static(__dirname + '/views'));
-
-
 
 var port = process.env.PORT || 3000
 app.listen(port, function() {
-    console.log("To view your app, open this link in your browser: http://localhost:" + port);
+  console.log("To view your app, open this link in your browser: http://localhost:" + port);
 });

@@ -27,19 +27,60 @@
         </div>
       </div>
       <div class="row mt-10">
+        <div class="col-sm-12 text-center form-group">
+          <label for="sel1">Choose graph</label>
+     <select class="form-control" id="select-graph" name="exercise">
+       <option selected value="overall">Overall Average</option>
+       <option value="lastmonth">Last Month's Average </option>
+       <option value="overtimecategory">Progress Over Time: Categories</option>
+     </select>
+        </div>
+      </div>
+      <div class="row mt-10 hide" id="categories-div">
+        <div class="col-sm-12 text-center form-group">
+          <label for="sel1">Choose Category</label>
+     <select class="form-control" id="select-category" name="exercise">
+       <option value="none" selected>none</option>
+       <option value="chest">Chest</option>
+       <option value="back">Back</option>
+       <option value="legs">Legs</option>
+       <option value="arms">Arms</option>
+       <option value="shoulders">Shoulders</option>
+     </select>
+        </div>
+      </div>
+      <div class="row mt-10 hide" id="exercise-div">
+        <div class="col-sm-12 text-center form-group">
+          <label for="sel1">Choose Exercise</label>
+     <select class="form-control" id="select-exercise" name="exercise">
+       <option value="none" selected>none</option>
+
+     </select>
+        </div>
+      </div>
+      <div class="row mt-10" >
+        <div id="messagediv"></div>
         <div class="col-sm-12 text-center ">
-          somedata
+          <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+      </div>
+      <br>
+      <div class="row mt-10">
+        <div class="col-sm-12 text-center">
+          <form action="home.html">
+            <button type="submit" class="btn-primary menuButton">Go Back</button>
+          </form>
         </div>
       </div>
 
     </div>
 
-    <footer class="footer">
-      <p class="text-muted text-center mt-5">By M. Mylle</p>
-    </footer>
 </div>
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
+  <script src="../assets/js/statistics.js"></script>
 </body>
 </html>
