@@ -15,6 +15,7 @@
     "url": "https://github.com/IBM-Bluemix/get-started-node"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.x",
     "cfenv": "^1.0.x",
     "chart.js": "^2.7.1",
