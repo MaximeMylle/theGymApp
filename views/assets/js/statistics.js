@@ -40,6 +40,7 @@ var showExcercises = function() {
     if (chosenoption == "arms") {
       chosenarray = armsexer;
     }
+    $("#select-exercise").empty();
 
     chosenarray.forEach(function(exercise) {
 
